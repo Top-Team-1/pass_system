@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.top.pass_system.dto.territoryDTO.TerritoryCreateDTO;
 import ru.top.pass_system.dto.territoryDTO.TerritoryResponseDTO;
-import ru.top.pass_system.model.Territory;
 import ru.top.pass_system.repository.TerritoryRepository;
 
 @Service
