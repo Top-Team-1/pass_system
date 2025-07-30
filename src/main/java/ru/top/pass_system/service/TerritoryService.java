@@ -15,17 +15,6 @@ public class TerritoryService {
 
     public TerritoryResponseDTO create(TerritoryCreateDTO territoryCreateDTO) {
 
-        Territory territory = Territory.builder()
-                .name(territoryCreateDTO.getName())
-                .description(territoryCreateDTO.getDescription())
-                .build();
-
-        territoryRepository.save(territory);
-
-        return TerritoryResponseDTO.builder()
-                .id(territory.getId())
-                .name(territory.getName())
-                .description(territory.getDescription())
-                .build();
+        return null;
     }
 }

@@ -2,34 +2,73 @@ package ru.top.pass_system.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.top.pass_system.dto.userDTO.UserCreateDTO;
 import ru.top.pass_system.dto.userDTO.UserResponseDTO;
+import ru.top.pass_system.dto.userDTO.UserUpdateDTO;
+import ru.top.pass_system.exception.UserAlreadyExistsException;
+import ru.top.pass_system.exception.UserNotFoundException;
+import ru.top.pass_system.mapper.UserMapper;
 import ru.top.pass_system.model.User;
 import ru.top.pass_system.repository.UserRepository;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     public UserResponseDTO create(UserCreateDTO userCreateDTO){
 
-       User user = User.builder()
-               .firstName(userCreateDTO.getFirstName())
-               .lastName(userCreateDTO.getLastName())
-               .dateOfBirth(userCreateDTO.getDateOfBirth())
-               .phone(userCreateDTO.getPhone())
-               .build();
+        if(userRepository.existsByPhone(userCreateDTO.getPhone())){
+            throw new UserAlreadyExistsException(userCreateDTO.getPhone());
+        }
 
-       userRepository.save(user);
+        User user =  userMapper.toUser(userCreateDTO);
 
-        return UserResponseDTO.builder()
-                .id(user.getId())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .dateOfBirth(user.getDateOfBirth())
-                .phone(user.getPhone())
-                .build();
+        return userMapper.toUserResponseDTO(userRepository.save(user));
+    }
+
+    public List<UserResponseDTO> findAll(){
+
+        return userRepository.findAll().stream()
+                .map(userMapper::toUserResponseDTO)
+                .toList();
+
+    }
+
+    public UserResponseDTO findById(Long id){
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+
+        return userMapper.toUserResponseDTO(user);
+    }
+
+    @Transactional
+    public UserResponseDTO update(UserUpdateDTO userUpdateDTO){
+
+        User user = userRepository.findById(userUpdateDTO.getId())
+                .orElseThrow(() -> new UserNotFoundException(userUpdateDTO.getId()));
+
+        if(userRepository.existsByPhone(userUpdateDTO.getPhone())){
+            throw new UserAlreadyExistsException(userUpdateDTO.getPhone());
+        }
+
+        userMapper.updateUserFromDTO(userUpdateDTO, user);
+
+        return userMapper.toUserResponseDTO(userRepository.save(user));
+
+    }
+
+    public void delete(Long id){
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+
+        userRepository.delete(user);
     }
 }

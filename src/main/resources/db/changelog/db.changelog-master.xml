@@ -6,4 +6,7 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.8.xsd">
 
     <include file="db/changelog/2025-07-27-create-table-users.sql"/>
+    <include file="db/changelog/2025-07-30-create-table-territories.sql"/>
+    <include file="db/changelog/2025-07-30-create-table-passes.sql"/>
+    <include file="db/changelog/2025-07-30-alter-tables-user-terr.sql"/>
 </databaseChangeLog>
