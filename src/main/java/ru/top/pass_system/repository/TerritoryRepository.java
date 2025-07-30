@@ -4,4 +4,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import ru.top.pass_system.model.Territory;
 
 public interface TerritoryRepository extends JpaRepository<Territory, Long> {
+    boolean existsByAddress(String address);
 }

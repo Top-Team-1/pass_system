@@ -16,5 +16,5 @@ import lombok.ToString;
 public class TerritoryCreateDTO {
 
     private String name;
-    private String description;
+    private String address;
 }
