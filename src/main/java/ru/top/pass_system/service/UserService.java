@@ -6,8 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.top.pass_system.dto.userDTO.UserCreateDTO;
 import ru.top.pass_system.dto.userDTO.UserResponseDTO;
 import ru.top.pass_system.dto.userDTO.UserUpdateDTO;
-import ru.top.pass_system.exception.UserAlreadyExistsException;
-import ru.top.pass_system.exception.UserNotFoundException;
+import ru.top.pass_system.enums.UserRole;
+import ru.top.pass_system.exception.user.UserAlreadyExistsException;
+import ru.top.pass_system.exception.user.UserNotFoundException;
 import ru.top.pass_system.mapper.UserMapper;
 import ru.top.pass_system.model.User;
 import ru.top.pass_system.repository.UserRepository;
@@ -28,6 +29,8 @@ public class UserService {
         }
 
         User user =  userMapper.toUser(userCreateDTO);
+
+        user.setRole(UserRole.USER);
 
         return userMapper.toUserResponseDTO(userRepository.save(user));
     }

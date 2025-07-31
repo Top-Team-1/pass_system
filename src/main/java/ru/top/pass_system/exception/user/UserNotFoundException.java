@@ -1,4 +1,4 @@
-package ru.top.pass_system.exception;
+package ru.top.pass_system.exception.user;
 
 public class UserNotFoundException extends RuntimeException {
 

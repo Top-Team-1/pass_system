@@ -1,4 +1,4 @@
-package ru.top.pass_system.exception;
+package ru.top.pass_system.exception.territory;
 
 public class TerritoryAlreadyExistsException extends RuntimeException {
 

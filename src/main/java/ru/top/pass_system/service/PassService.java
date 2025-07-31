@@ -6,8 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.top.pass_system.dto.passDTO.PassCreateDTO;
 import ru.top.pass_system.dto.passDTO.PassResponseDTO;
 import ru.top.pass_system.dto.passDTO.PassUpdateDTO;
-import ru.top.pass_system.exception.PassNotFoundException;
-import ru.top.pass_system.exception.UserNotFoundException;
+import ru.top.pass_system.exception.pass.PassNotFoundException;
+import ru.top.pass_system.exception.territory.TerritoryNotFoundException;
+import ru.top.pass_system.exception.user.UserNotFoundException;
 import ru.top.pass_system.mapper.PassMapper;
 import ru.top.pass_system.model.Pass;
 import ru.top.pass_system.model.Territory;
@@ -32,10 +33,13 @@ public class PassService {
                 .orElseThrow(() -> new UserNotFoundException(passCreateDTO.getUserId()));
 
         Territory territory = territoryRepository.findById(passCreateDTO.getTerritoryId())
-                .orElseThrow(() -> new RuntimeException("Территория не найдена"));
+                .orElseThrow(() -> new TerritoryNotFoundException(passCreateDTO.getTerritoryId()));
 
 
         Pass pass = passMapper.toPass(passCreateDTO);
+
+        pass.setUser(user);
+        pass.setTerritory(territory);
 
         return passMapper.toPassResponseDTO(passRepository.save(pass));
     }
