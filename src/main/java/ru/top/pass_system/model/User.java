@@ -1,6 +1,8 @@
 package ru.top.pass_system.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,6 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
+import ru.top.pass_system.enums.UserRole;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,6 +44,9 @@ public class User {
     private String lastName;
     private LocalDate dateOfBirth;
     private String phone;
+
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
     @CreationTimestamp
     private LocalDateTime addedAt;
