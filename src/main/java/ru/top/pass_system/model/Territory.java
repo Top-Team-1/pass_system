@@ -3,6 +3,7 @@ package ru.top.pass_system.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import ru.top.pass_system.enums.TerritoryType;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,4 +30,7 @@ public class Territory {
 
     @ManyToMany(mappedBy = "territories")
     private List<User> users;
+
+    @Enumerated(EnumType.STRING)
+    private TerritoryType type;
 }
