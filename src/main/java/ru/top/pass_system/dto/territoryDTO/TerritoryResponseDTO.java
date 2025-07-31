@@ -26,4 +26,6 @@ public class TerritoryResponseDTO {
     private LocalDateTime addedAt;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime updatedAt;
+
+    private String type;
 }
