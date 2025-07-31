@@ -34,7 +34,7 @@ public class PassController {
         return ResponseEntity.ok(passService.findAll());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(path = "{id}")
     public ResponseEntity<PassResponseDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(passService.findById(id));
     }
@@ -44,7 +44,7 @@ public class PassController {
         return ResponseEntity.ok(passService.update(passUpdateDTO));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(path = "{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         passService.delete(id);
         return ResponseEntity.ok("Пропуск с id: " + id + " успешно удалён.");

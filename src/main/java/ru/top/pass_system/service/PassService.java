@@ -7,6 +7,7 @@ import ru.top.pass_system.dto.passDTO.PassCreateDTO;
 import ru.top.pass_system.dto.passDTO.PassResponseDTO;
 import ru.top.pass_system.dto.passDTO.PassUpdateDTO;
 import ru.top.pass_system.exception.PassNotFoundException;
+import ru.top.pass_system.exception.UserNotFoundException;
 import ru.top.pass_system.mapper.PassMapper;
 import ru.top.pass_system.model.Pass;
 import ru.top.pass_system.model.Territory;
@@ -28,7 +29,7 @@ public class PassService {
 
     public PassResponseDTO create(PassCreateDTO passCreateDTO) {
         User user = userRepository.findById(passCreateDTO.getUserId())
-                .orElseThrow(() -> new RuntimeException("Пользователь не найден"));
+                .orElseThrow(() -> new UserNotFoundException(passCreateDTO.getUserId()));
 
         Territory territory = territoryRepository.findById(passCreateDTO.getTerritoryId())
                 .orElseThrow(() -> new RuntimeException("Территория не найдена"));
