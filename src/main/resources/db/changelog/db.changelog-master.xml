@@ -11,4 +11,5 @@
     <include file="db/changelog/2025-07-30-alter-tables-user-terr.sql"/>
     <include file="/db/changelog/2025-07-30-alter-table-territory-add-constraint.sql"/>
     <include file="/db/changelog/2025-07-31-alter-table-users-add-column-role.sql"/>
+    <include file="/db/changelog/2025-07-31-alter-table-pass-add-columns.sql"/>
 </databaseChangeLog>
