@@ -1,0 +1,27 @@
+ALTER TABLE passes
+    ADD COLUMN first_name VARCHAR(100) NOT NULL;
+
+ALTER TABLE passes
+    ADD COLUMN last_name VARCHAR(100) NOT NULL;
+
+ALTER TABLE passes
+    ADD COLUMN type VARCHAR(20);
+
+ALTER TABLE passes
+    ADD COLUMN status VARCHAR(20);
+
+ALTER TABLE passes
+    ADD COLUMN start_date TIMESTAMP;
+
+ALTER TABLE passes
+    ADD COLUMN end_date TIMESTAMP;
+
+ALTER TABLE passes
+    ADD COLUMN added_at TIMESTAMP;
+
+ALTER TABLE passes
+    ADD COLUMN update_at TIMESTAMP;
+
+ALTER TABLE passes
+DROP
+COLUMN is_active;
