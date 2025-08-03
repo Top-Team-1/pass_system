@@ -1,14 +1,17 @@
 package ru.top.pass_system.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.top.pass_system.dto.territoryDTO.TerritoryCreateDTO;
+import ru.top.pass_system.dto.territoryDTO.TerritoryFilterDTO;
 import ru.top.pass_system.dto.territoryDTO.TerritoryResponseDTO;
 import ru.top.pass_system.dto.territoryDTO.TerritoryUpdateDTO;
 import ru.top.pass_system.service.TerritoryService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/territory")
@@ -24,8 +27,10 @@ public class TerritoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TerritoryResponseDTO>> findAll() {
-        return ResponseEntity.ok(territoryService.findAll());
+    public ResponseEntity<Page<TerritoryResponseDTO>> findAll(@ModelAttribute TerritoryFilterDTO territoryFilterDTO,
+                                                              @PageableDefault(size = 5, sort = "id",
+                                                                      direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.ok(territoryService.findAll(territoryFilterDTO, pageable));
     }
 
     @GetMapping(path = "{id}")
