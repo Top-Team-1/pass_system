@@ -1,9 +1,13 @@
 package ru.top.pass_system.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.top.pass_system.dto.userDTO.UserCreateDTO;
+import ru.top.pass_system.dto.userDTO.UserFilterDTO;
 import ru.top.pass_system.dto.userDTO.UserResponseDTO;
 import ru.top.pass_system.dto.userDTO.UserUpdateDTO;
 import ru.top.pass_system.enums.UserRole;
@@ -12,8 +16,7 @@ import ru.top.pass_system.exception.user.UserNotFoundException;
 import ru.top.pass_system.mapper.UserMapper;
 import ru.top.pass_system.model.User;
 import ru.top.pass_system.repository.UserRepository;
-
-import java.util.List;
+import ru.top.pass_system.specification.UserSpecification;
 
 @Service
 @RequiredArgsConstructor
@@ -22,28 +25,28 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    public UserResponseDTO create(UserCreateDTO userCreateDTO){
+    public UserResponseDTO create(UserCreateDTO userCreateDTO) {
 
-        if(userRepository.existsByPhone(userCreateDTO.getPhone())){
+        if (userRepository.existsByPhone(userCreateDTO.getPhone())) {
             throw new UserAlreadyExistsException(userCreateDTO.getPhone());
         }
 
-        User user =  userMapper.toUser(userCreateDTO);
+        User user = userMapper.toUser(userCreateDTO);
 
         user.setRole(UserRole.USER);
 
         return userMapper.toUserResponseDTO(userRepository.save(user));
     }
 
-    public List<UserResponseDTO> findAll(){
+    public Page<UserResponseDTO> findAll(UserFilterDTO filter, Pageable pageable) {
 
-        return userRepository.findAll().stream()
-                .map(userMapper::toUserResponseDTO)
-                .toList();
+        Specification<User> spec = UserSpecification.createSpecification(filter);
+
+        return userRepository.findAll(spec, pageable).map(userMapper::toUserResponseDTO);
 
     }
 
-    public UserResponseDTO findById(Long id){
+    public UserResponseDTO findById(Long id) {
 
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
@@ -52,12 +55,12 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDTO update(UserUpdateDTO userUpdateDTO){
+    public UserResponseDTO update(UserUpdateDTO userUpdateDTO) {
 
         User user = userRepository.findById(userUpdateDTO.getId())
                 .orElseThrow(() -> new UserNotFoundException(userUpdateDTO.getId()));
 
-        if(userRepository.existsByPhone(userUpdateDTO.getPhone())){
+        if (userRepository.existsByPhone(userUpdateDTO.getPhone())) {
             throw new UserAlreadyExistsException(userUpdateDTO.getPhone());
         }
 
@@ -67,7 +70,7 @@ public class UserService {
 
     }
 
-    public void delete(Long id){
+    public void delete(Long id) {
 
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
