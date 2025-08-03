@@ -1,9 +1,13 @@
 package ru.top.pass_system.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.top.pass_system.dto.territoryDTO.TerritoryCreateDTO;
+import ru.top.pass_system.dto.territoryDTO.TerritoryFilterDTO;
 import ru.top.pass_system.dto.territoryDTO.TerritoryResponseDTO;
 import ru.top.pass_system.dto.territoryDTO.TerritoryUpdateDTO;
 import ru.top.pass_system.exception.territory.TerritoryAlreadyExistsException;
@@ -11,6 +15,7 @@ import ru.top.pass_system.exception.territory.TerritoryNotFoundException;
 import ru.top.pass_system.mapper.TerritoryMapper;
 import ru.top.pass_system.model.Territory;
 import ru.top.pass_system.repository.TerritoryRepository;
+import ru.top.pass_system.specification.TerritorySpecification;
 
 import java.util.List;
 
@@ -31,10 +36,9 @@ public class TerritoryService {
         return territoryMapper.toTerritoryResponseDTO(territoryRepository.save(territory));
     }
 
-    public List<TerritoryResponseDTO> findAll() {
-        return territoryRepository.findAll().stream()
-                .map(territoryMapper::toTerritoryResponseDTO)
-                .toList();
+    public Page<TerritoryResponseDTO> findAll(TerritoryFilterDTO territoryFilterDTO, Pageable pageable) {
+        Specification<Territory> specification = TerritorySpecification.createSpecification(territoryFilterDTO);
+        return territoryRepository.findAll(specification, pageable).map(territoryMapper::toTerritoryResponseDTO);
     }
 
     public TerritoryResponseDTO findById(Long id) {
