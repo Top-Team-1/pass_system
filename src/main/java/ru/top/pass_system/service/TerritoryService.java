@@ -17,8 +17,6 @@ import ru.top.pass_system.model.Territory;
 import ru.top.pass_system.repository.TerritoryRepository;
 import ru.top.pass_system.specification.TerritorySpecification;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class TerritoryService {

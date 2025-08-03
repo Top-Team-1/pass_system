@@ -13,8 +13,6 @@ import ru.top.pass_system.dto.territoryDTO.TerritoryResponseDTO;
 import ru.top.pass_system.dto.territoryDTO.TerritoryUpdateDTO;
 import ru.top.pass_system.service.TerritoryService;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/territory")
 @RequiredArgsConstructor
