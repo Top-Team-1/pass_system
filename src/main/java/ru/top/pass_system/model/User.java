@@ -19,7 +19,6 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import ru.top.pass_system.enums.UserRole;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
