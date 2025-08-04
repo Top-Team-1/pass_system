@@ -2,6 +2,7 @@ package ru.top.pass_system.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.top.pass_system.exception.pass.PassNotFoundException;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler
+    @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
 
         ErrorResponse errorResponse = ErrorResponse.builder()
@@ -27,7 +28,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
 
         ErrorResponse errorResponse = ErrorResponse.builder()
@@ -40,7 +41,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(TerritoryNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleTerritoryNotFoundException(TerritoryNotFoundException ex) {
 
         ErrorResponse errorResponse = ErrorResponse.builder()
@@ -53,7 +54,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(TerritoryAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleTerritoryAlreadyExistsException(TerritoryAlreadyExistsException ex) {
 
 
@@ -67,7 +68,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler
+    @ExceptionHandler(PassNotFoundException.class)
     public ResponseEntity<ErrorResponse> handePassNotFoundException(PassNotFoundException ex){
 
         ErrorResponse errorResponse = ErrorResponse.builder()
@@ -78,6 +79,21 @@ public class GlobalExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handeBadCredentialsException(BadCredentialsException ex){
+
+        String message = "Неверный логин или пароль";
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .time(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(message)
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }
 
