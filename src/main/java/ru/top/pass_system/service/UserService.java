@@ -4,9 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.top.pass_system.dto.userDTO.UserCreateDTO;
+import ru.top.pass_system.dto.userDTO.SignUpRequest;
 import ru.top.pass_system.dto.userDTO.UserFilterDTO;
 import ru.top.pass_system.dto.userDTO.UserResponseDTO;
 import ru.top.pass_system.dto.userDTO.UserUpdateDTO;
@@ -24,18 +27,18 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserResponseDTO create(UserCreateDTO userCreateDTO) {
+    public User signUp(User user) {
 
-        if (userRepository.existsByPhone(userCreateDTO.getPhone())) {
-            throw new UserAlreadyExistsException(userCreateDTO.getPhone());
+        if (userRepository.existsByPhone(user.getPhone())) {
+            throw new UserAlreadyExistsException(user.getPhone());
         }
 
-        User user = userMapper.toUser(userCreateDTO);
-
         user.setRole(UserRole.USER);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        return userMapper.toUserResponseDTO(userRepository.save(user));
+        return userRepository.save(user);
     }
 
     public Page<UserResponseDTO> findAll(UserFilterDTO filter, Pageable pageable) {
@@ -76,5 +79,30 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException(id));
 
         userRepository.delete(user);
+    }
+
+
+    public User getByUsername(String phone) {
+        return userRepository.findByPhone(phone)
+                .orElseThrow(() -> new UserNotFoundException(phone));
+    }
+
+
+    public UserDetailsService userDetailsService() {
+        return this::getByUsername;
+    }
+
+
+    public User getCurrentUser() {
+        // Получение имени пользователя из контекста Spring Security
+        var username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return getByUsername(username);
+    }
+
+    public UserResponseDTO create(SignUpRequest signUpRequest){
+
+        User user = userMapper.toUser(signUpRequest);
+
+        return userMapper.toUserResponseDTO(signUp(user));
     }
 }

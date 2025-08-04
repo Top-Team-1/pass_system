@@ -16,10 +16,11 @@ import java.time.LocalDate;
 @Setter
 @ToString
 @Builder
-public class UserCreateDTO {
+public class SignUpRequest {
 
     private String firstName;
     private String lastName;
     private LocalDate dateOfBirth;
     private String phone;
+    private String password;
 }
