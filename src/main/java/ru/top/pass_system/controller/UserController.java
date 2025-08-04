@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.top.pass_system.dto.userDTO.UserCreateDTO;
+import ru.top.pass_system.dto.userDTO.SignUpRequest;
 import ru.top.pass_system.dto.userDTO.UserFilterDTO;
 import ru.top.pass_system.dto.userDTO.UserResponseDTO;
 import ru.top.pass_system.dto.userDTO.UserUpdateDTO;
@@ -30,14 +30,13 @@ public class UserController {
 
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> create(@RequestBody UserCreateDTO userCreateDTO) {
+    public ResponseEntity<UserResponseDTO> create(@RequestBody SignUpRequest signUpRequest) {
 
-        return ResponseEntity.ok(userService.create(userCreateDTO));
+        return ResponseEntity.ok(userService.create(signUpRequest));
 
     }
 
     @GetMapping
-
     public ResponseEntity<Page<UserResponseDTO>> findAll(@ModelAttribute UserFilterDTO filter,
                                                          @PageableDefault(size = 5, sort = "id",
                                                                  direction = Sort.Direction.ASC) Pageable pageable) {
