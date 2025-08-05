@@ -16,7 +16,6 @@ import java.time.LocalDate;
 @Builder
 public class CurrentUserUpdateDTO {
 
-    private Long id;
     private String firstName;
     private String lastName;
     private LocalDate dateOfBirth;
