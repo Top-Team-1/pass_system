@@ -92,13 +92,6 @@ public class UserService {
         return this::getByUsername;
     }
 
-
-    public User getCurrentUser() {
-        // Получение имени пользователя из контекста Spring Security
-        var username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return getByUsername(username);
-    }
-
     public UserResponseDTO create(SignUpRequest signUpRequest){
 
         User user = userMapper.toUser(signUpRequest);
