@@ -11,21 +11,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 password: loginForm.elements['password'].value
             };
 
-            const response = await fetch('http://localhost:8080/auth/sign-in', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(data)
-            });
+            try {
+                const response = await fetch('http://localhost:8080/auth/sign-in', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
 
-            if (response.ok) {
-                const result = await response.json();
-                localStorage.setItem('jwt', result.token); // сохраняем токен
-                alert('Успешный вход!');
-                // тут будем отправлять на нужную страницу
-            } else {
-                const errorText = await response.text();
-                console.error('Ошибка входа:', errorText);
-                alert('Ошибка входа');
+                if (response.ok) {
+                    const result = await response.json();
+                    localStorage.setItem('jwt', result.token);
+
+                    location.href = 'dashboard.html';
+                } else {
+                    const errorText = await response.text();
+                    console.error('Ошибка входа:', errorText);
+                    alert('Ошибка входа');
+                }
+            } catch (error) {
+                console.error('Ошибка сети:', error);
+                alert('Ошибка соединения с сервером');
             }
         });
     }
@@ -42,21 +47,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 password: registerForm.elements['password'].value
             };
 
-            const response = await fetch('http://localhost:8080/auth/sign-up', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(data)
-            });
+            try {
+                const response = await fetch('http://localhost:8080/auth/sign-up', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
 
-            if (response.ok) {
-                const result = await response.json();
-                localStorage.setItem('jwt', result.token); // сохраняем токен
-                alert('Успешная регистрация!');
-                location.href = 'index.html'; // возвращаем на вход
-            } else {
-                const errorText = await response.text();
-                console.error('Ошибка регистрации:', errorText);
-                alert('Ошибка регистрации');
+                if (response.ok) {
+                    const result = await response.json();
+                    localStorage.setItem('jwt', result.token);
+                    // ✅ Переход в личный кабинет
+                    location.href = 'dashboard.html';
+                } else {
+                    const errorText = await response.text();
+                    console.error('Ошибка регистрации:', errorText);
+                    alert('Ошибка регистрации');
+                }
+            } catch (error) {
+                console.error('Ошибка сети:', error);
+                alert('Ошибка соединения с сервером');
             }
         });
     }
