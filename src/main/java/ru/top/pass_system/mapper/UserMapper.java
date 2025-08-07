@@ -4,6 +4,7 @@ import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
+import ru.top.pass_system.dto.userDTO.CurrentUserUpdateDTO;
 import ru.top.pass_system.dto.userDTO.SignUpRequest;
 import ru.top.pass_system.dto.userDTO.UserResponseDTO;
 import ru.top.pass_system.dto.userDTO.UserUpdateDTO;
@@ -18,4 +19,7 @@ public interface UserMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateUserFromDTO(UserUpdateDTO userUpdateDTO, @MappingTarget User user);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void updateUserFromDTO(CurrentUserUpdateDTO currentUserUpdateDTO, @MappingTarget User user);
 }
