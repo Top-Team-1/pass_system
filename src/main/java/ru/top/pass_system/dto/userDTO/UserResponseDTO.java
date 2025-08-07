@@ -24,6 +24,7 @@ public class UserResponseDTO {
     private String lastName;
     private LocalDate dateOfBirth;
     private String phone;
+    private String role;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime addedAt;

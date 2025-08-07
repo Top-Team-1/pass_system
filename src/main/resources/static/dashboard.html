@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Личный кабинет</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="dashboard-container">
+    <h2>Личный кабинет</h2>
+    <p id="userInfo">Загрузка...</p>
+
+    <div id="adminActions" style="display: none;">
+        <h3>Действия администратора</h3>
+        <button onclick="createUser()">Создать пользователя</button>
+        <button onclick="deleteUser()">Удалить пользователя</button>
+        <button onclick="getAllUsers()">Посмотреть всех пользователей</button>
+
+        <button onclick="getAllTerritories()">Посмотреть все территории</button>
+        <button onclick="createTerritory()">Создать территорию</button>
+        <button onclick="deleteTerritory()">Удалить территорию</button>
+        <button onclick="bindUserToTerritory()">Привязать пользователя к территории</button>
+
+        <button onclick="createPass()">Создать пропуск</button>
+        <button onclick="deletePass()">Удалить пропуск</button>
+        <button onclick="getAllPasses()">Посмотреть все пропуски</button>
+    </div>
+
+    <div id="userActions" style="display: none;">
+        <h3>Действия пользователя</h3>
+        <!-- Добавь действия для обычного пользователя -->
+        <p>Здесь могут быть кнопки только для USER'ов</p>
+    </div>
+    <div id="userListContainer" style="margin-top: 20px;"></div>
+
+
+    <button onclick="logout()" class="extra-button" style="margin-top: 20px;">Выход</button>
+</div>
+
+<script src="dashboard.js"></script>
+</body>
+</html>
