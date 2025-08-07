@@ -28,8 +28,8 @@ public class Territory {
     @CreationTimestamp
     private LocalDateTime updatedAt;
 
-    @ManyToMany(mappedBy = "territories")
-    private List<User> users;
+    @OneToMany(mappedBy = "territory", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserTerritory> userTerritories;
 
     @Enumerated(EnumType.STRING)
     private TerritoryType type;
