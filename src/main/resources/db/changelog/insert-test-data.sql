@@ -65,14 +65,51 @@ VALUES
 (5, 3, 'Сергей', 'Волков', 'PERMANENT', 'ACTIVE', NOW(), NOW() + INTERVAL '1 year', NOW(), NOW()),
 (6, 4, 'Анна', 'Морозова', 'PERMANENT', 'ACTIVE', NOW(), NOW() + INTERVAL '1 year', NOW(), NOW()),
 (7, 5, 'Михаил', 'Лебедев', 'PERMANENT', 'ACTIVE', NOW(), NOW() + INTERVAL '1 year', NOW(), NOW()),
-(8, 1, 'Андрей', 'Смирнов', 'TEMPORARY', 'ACTIVE', NOW(), NOW() + INTERVAL '3 months', NOW(), NOW()),
+(8, 1, 'Андрей', 'Смирнов', 'TIMELESS', 'ACTIVE', NOW(), NOW() + INTERVAL '3 months', NOW(), NOW()),
 (9, 2, 'Наталья', 'Кузнецова', 'PERMANENT', 'ACTIVE', NOW(), NOW() + INTERVAL '6 months', NOW(), NOW()),
-(10, 3, 'Артем', 'Попов', 'TEMPORARY', 'ACTIVE', NOW(), NOW() + INTERVAL '2 months', NOW(), NOW()),
+(10, 3, 'Артем', 'Попов', 'TIMELESS', 'ACTIVE', NOW(), NOW() + INTERVAL '2 months', NOW(), NOW()),
 (11, 4, 'Елена', 'Васильева', 'PERMANENT', 'ACTIVE', NOW(), NOW() + INTERVAL '1 year', NOW(), NOW()),
-(12, 5, 'Кирилл', 'Павлов', 'TEMPORARY', 'ACTIVE', NOW(), NOW() + INTERVAL '1 month', NOW(), NOW()),
+(12, 5, 'Кирилл', 'Павлов', 'TIMELESS', 'ACTIVE', NOW(), NOW() + INTERVAL '1 month', NOW(), NOW()),
 (13, 6, 'Светлана', 'Семенова', 'PERMANENT', 'ACTIVE', NOW(), NOW() + INTERVAL '1 year', NOW(), NOW()),
-(14, 7, 'Александр', 'Голубев', 'TEMPORARY', 'ACTIVE', NOW(), NOW() + INTERVAL '4 months', NOW(), NOW()),
+(14, 7, 'Александр', 'Голубев', 'TIMELESS', 'ACTIVE', NOW(), NOW() + INTERVAL '4 months', NOW(), NOW()),
 (15, 1, 'Татьяна', 'Виноградова', 'PERMANENT', 'ACTIVE', NOW(), NOW() + INTERVAL '1 year', NOW(), NOW()),
-(16, 2, 'Юлия', 'Ковалева', 'TEMPORARY', 'ACTIVE', NOW(), NOW() + INTERVAL '3 months', NOW(), NOW()),
+(16, 2, 'Юлия', 'Ковалева', 'TIMELESS', 'ACTIVE', NOW(), NOW() + INTERVAL '3 months', NOW(), NOW()),
 (17, 3, 'Николай', 'Новиков', 'PERMANENT', 'ACTIVE', NOW(), NOW() + INTERVAL '1 year', NOW(), NOW()),
-(18, 4, 'Ирина', 'Алексеева', 'TEMPORARY', 'EXPIRED', NOW() - INTERVAL '4 months', NOW() - INTERVAL '1 month', NOW(), NOW());
+(18, 4, 'Ирина', 'Алексеева', 'TIMELESS', 'INACTIVE', NOW() - INTERVAL '4 months', NOW() - INTERVAL '1 month', NOW(), NOW());
+
+INSERT INTO user_territory (user_id, territory_id) VALUES
+-- Админы (несколько территорий)
+(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7),
+(2, 1), (2, 4),
+(3, 2), (3, 5),
+
+-- Охрана (по 2-3 территории)
+(4, 1), (4, 2),
+(5, 3), (5, 4),
+(6, 5), (6, 6),
+(7, 7), (7, 1),
+(8, 2), (8, 3),
+
+-- Обычные пользователи (по 1-2 территории)
+(9, 1),
+(10, 2),
+(11, 3), (11, 4),
+(12, 5),
+(13, 6), (13, 7),
+(14, 1),
+(15, 2),
+(16, 3),
+(17, 4), (17, 5),
+(18, 6),
+(19, 7),
+(20, 1),
+(21, 2), (21, 3),
+(22, 4),
+(23, 5),
+(24, 6), (24, 7),
+(25, 1),
+(26, 2),
+(27, 3),
+(28, 4), (28, 5),
+(29, 6),
+(30, 7);

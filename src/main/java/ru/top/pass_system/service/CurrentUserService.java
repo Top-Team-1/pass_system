@@ -46,4 +46,10 @@ public class CurrentUserService {
 
         return userMapper.toUserResponseDTO(userRepository.save(currentUser));
     }
+
+    public User getUserWithZone(){
+
+        return userRepository.getUserWithZone(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId())
+                .orElseThrow(() -> new UserNotFoundException(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()));
+    }
 }

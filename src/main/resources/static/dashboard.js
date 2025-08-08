@@ -240,6 +240,14 @@ function sortUsers(field) {
 }
 
 function deleteUser(id) {
+    if (!id) {
+        id = prompt("Введите ID пользователя для удаления:");
+        if (!id) {
+            alert("ID не введён, удаление отменено");
+            return;
+        }
+    }
+
     if (!confirm(`Точно удалить пользователя с ID ${id}?`)) return;
 
     fetch(`http://localhost:8080/api/user/${id}`, {
@@ -267,14 +275,79 @@ function getAllTerritories() {
     // TODO: fetch('...', { method: 'GET', ... })
 }
 
+// Создание новой территории
 function createTerritory() {
-    console.log('Создать территорию');
-    // TODO: fetch('...', { method: 'POST', ... })
+    const name = prompt('Название территории:');
+    const address = prompt('Адрес:');
+    const type = prompt('Тип территории (например: PARK, BUILDING, ZONE и т.д.):');
+
+    if (!name || !address || !type) {
+        alert('Все поля обязательны!');
+        return;
+    }
+
+    const data = {
+        name,
+        address,
+        type
+    };
+
+    fetch('http://localhost:8080/api/territory', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+        },
+        body: JSON.stringify(data)
+    })
+        .then(res => {
+            if (res.ok) {
+                alert('Территория создана!');
+                return res.json();
+            } else {
+                return res.text().then(text => {
+                    throw new Error(text);
+                });
+            }
+        })
+        .then(() => {
+            getAllTerritories(currentTerritoryPage, currentTerritorySort, currentTerritoryDirection);
+        })
+        .catch(err => {
+            console.error('Ошибка создания территории:', err);
+            alert(`Ошибка: ${err.message || 'Неизвестная ошибка'}`);
+        });
 }
 
-function deleteTerritory() {
-    console.log('Удалить территорию');
-    // TODO: fetch('...', { method: 'DELETE', ... })
+function deleteTerritory(id) {
+    if (!id) {
+        id = prompt("Введите ID территории для удаления:");
+        if (!id) {
+            alert("ID не введён, удаление отменено");
+            return;
+        }
+    }
+
+    if (!confirm(`Точно удалить территорию с ID ${id}?`)) return;
+
+    fetch(`http://localhost:8080/api/territory/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+        }
+    })
+        .then(res => {
+            if (!res.ok) throw new Error(`Ошибка удаления: ${res.status}`);
+            return res.text();
+        })
+        .then(msg => {
+            alert(msg);
+            getAllTerritories(currentTerritoryPage, currentTerritorySort, currentTerritoryDirection);
+        })
+        .catch(err => {
+            console.error('Ошибка при удалении территории:', err);
+            alert('Ошибка при удалении территории');
+        });
 }
 
 function bindUserToTerritory() {
@@ -322,21 +395,177 @@ function bindUserToTerritory() {
             alert(`Ошибка: ${err.message || 'Не удалось привязать пользователя к территории'}`);
         });
 }
+const API_PASS = 'http://localhost:8080/api/pass';
 
 function createPass() {
-    console.log('Создать пропуск');
-    // TODO: fetch('...', { method: 'POST', ... })
+    const userId = prompt('ID пользователя:');
+    const territoryId = prompt('ID территории:');
+    const startDate = prompt('Дата начала (yyyy-MM-dd HH:mm):');
+    const endDate = prompt('Дата окончания (yyyy-MM-dd HH:mm):');
+    const type = prompt('Тип (PASS_FOR_CAR или PASS_FOR_PEDESTRIAN):');
+    const firstName = prompt('Имя:');
+    const lastName = prompt('Фамилия:');
+
+    if (!userId || !territoryId || !startDate || !endDate || !type || !firstName || !lastName) {
+        alert('Все поля обязательны!');
+        return;
+    }
+
+    const data = {
+        userId: Number(userId),
+        territoryId: Number(territoryId),
+        startDate,
+        endDate,
+        type,
+        firstName,
+        lastName
+    };
+
+    fetch('http://localhost:8080/api/pass', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+        },
+        body: JSON.stringify(data)
+    })
+        .then(res => {
+            if (res.ok) {
+                alert('Пропуск создан!');
+                getAllPasses(currentPassPage, currentPassSort, currentPassDirection);
+            } else {
+                return res.text().then(text => {
+                    throw new Error(text);
+                });
+            }
+        })
+        .catch(err => {
+            console.error('Ошибка создания пропуска:', err);
+            alert('Ошибка создания пропуска');
+        });
 }
 
-function deletePass() {
-    console.log('Удалить пропуск');
-    // TODO: fetch('...', { method: 'DELETE', ... })
+function deletePass(id) {
+    if (!id) {
+        id = prompt("Введите ID пропуска для удаления:");
+        if (!id) {
+            alert("ID не введён, удаление отменено");
+            return;
+        }
+    }
+
+    if (!confirm(`Точно удалить пропуск с ID ${id}?`)) return;
+
+    fetch(`http://localhost:8080/api/pass/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+        }
+    })
+        .then(res => {
+            if (!res.ok) throw new Error(`Ошибка удаления: ${res.status}`);
+            return res.text();
+        })
+        .then(msg => {
+            alert(msg);
+            getAllPasses(currentPassPage, currentPassSort, currentPassDirection);
+        })
+        .catch(err => {
+            console.error('Ошибка при удалении пропуска:', err);
+            alert('Ошибка при удалении пропуска');
+        });
 }
 
-function getAllPasses() {
-    console.log('Получить все пропуски');
-    // TODO: fetch('...', { method: 'GET', ... })
+let currentPassPage = 0;
+let currentPassSort = 'id';
+let currentPassDirection = 'asc';
+const passPageSize = 5;
+
+function getAllPasses(page = 0, sort = 'id', direction = 'asc') {
+    currentPassPage = page;
+    currentPassSort = sort;
+    currentPassDirection = direction;
+
+    fetch(`http://localhost:8080/api/pass?page=${page}&size=${passPageSize}&sort=${sort},${direction}`, {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+        }
+    })
+        .then(res => {
+            if (!res.ok) throw new Error(`Ошибка: ${res.status}`);
+            return res.json();
+        })
+        .then(data => {
+            const passes = data.content || [];
+            const totalPages = data.totalPages || 1;
+            renderPassTableWithPagination(passes, totalPages, page, sort, direction);
+        })
+        .catch(err => {
+            console.error('Ошибка получения пропусков:', err);
+            alert('Ошибка при получении пропусков');
+        });
 }
+
+function renderPassTableWithPagination(passes, totalPages, page, sort, direction) {
+    const container = document.getElementById('passListContainer');
+    if (!container) {
+        console.error('Контейнер passListContainer не найден');
+        return;
+    }
+
+    if (!passes || passes.length === 0) {
+        container.innerHTML = '<p>Пропуска не найдены.</p>';
+        return;
+    }
+
+    let html = `
+        <h3>Список пропусков</h3>
+        <table border="1" cellpadding="5" cellspacing="0">
+            <thead>
+                <tr>
+                    <th onclick="sortPasses('id')">ID</th>
+                    <th onclick="sortPasses('firstName')">Имя</th>
+                    <th onclick="sortPasses('lastName')">Фамилия</th>
+                    <th onclick="sortPasses('territoryName')">Территория</th>
+                    <th onclick="sortPasses('startDate')">Начало</th>
+                    <th onclick="sortPasses('endDate')">Окончание</th>
+                    <th onclick="sortPasses('type')">Тип</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    passes.forEach(pass => {
+        html += `
+            <tr>
+                <td>${pass.id ?? ''}</td>
+                <td>${pass.firstName ?? pass.user?.firstName ?? ''}</td>
+                <td>${pass.lastName ?? pass.user?.lastName ?? ''}</td>
+                <td>${pass.territoryName ?? ''}</td>
+                <td>${pass.startDate ?? ''}</td>
+                <td>${pass.endDate ?? ''}</td>
+                <td>${pass.type ?? ''}</td>
+                <td><button onclick="deletePass(${pass.id})">Удалить</button></td>
+            </tr>
+        `;
+    });
+
+    html += `</tbody></table>`;
+
+    html += `<div style="margin-top:10px">`;
+    for (let i = 0; i < totalPages; i++) {
+        html += `<button onclick="getAllPasses(${i}, '${sort}', '${direction}')" ${i === page ? 'disabled' : ''}>${i + 1}</button> `;
+    }
+    html += `</div>`;
+
+    container.innerHTML = html;
+}
+function sortPasses(field) {
+    const newDirection = currentPassSort === field && currentPassDirection === 'asc' ? 'desc' : 'asc';
+    getAllPasses(0, field, newDirection);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('jwt');
 
@@ -466,49 +695,7 @@ function sortTerritories(field) {
     getAllTerritories(0, field, newDirection);
 }
 
-// Создание новой территории
-function createTerritory() {
-    const name = prompt('Название территории:');
-    const address = prompt('Адрес:');
-    const type = prompt('Тип территории (например: PARK, BUILDING, ZONE и т.д.):');
 
-    if (!name || !address || !type) {
-        alert('Все поля обязательны!');
-        return;
-    }
-
-    const data = {
-        name,
-        address,
-        type
-    };
-
-    fetch('http://localhost:8080/api/territory', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('jwt')}`
-        },
-        body: JSON.stringify(data)
-    })
-        .then(res => {
-            if (res.ok) {
-                alert('Территория создана!');
-                return res.json();
-            } else {
-                return res.text().then(text => {
-                    throw new Error(text);
-                });
-            }
-        })
-        .then(() => {
-            getAllTerritories(currentTerritoryPage, currentTerritorySort, currentTerritoryDirection);
-        })
-        .catch(err => {
-            console.error('Ошибка создания территории:', err);
-            alert(`Ошибка: ${err.message || 'Неизвестная ошибка'}`);
-        });
-}
 
 // Подтверждение удаления территории
 function confirmDeleteTerritory(id) {
@@ -516,27 +703,66 @@ function confirmDeleteTerritory(id) {
     deleteTerritory(id);
 }
 
-// Удаление территории по ID
-function deleteTerritory(id) {
-    fetch(`http://localhost:8080/api/territory/${id}`, {
-        method: 'DELETE',
+
+
+
+
+
+function getMyTerritories() {
+    fetch('http://localhost:8080/api/territory/my', {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('jwt')}`
         }
     })
         .then(res => {
-            if (!res.ok) throw new Error(`Ошибка удаления: ${res.status}`);
-            return res.text();
+            if (!res.ok) throw new Error(`Ошибка: ${res.status}`);
+            return res.json();
         })
-        .then(msg => {
-            alert(msg);
-            getAllTerritories(currentTerritoryPage, currentTerritorySort, currentTerritoryDirection);
+        .then(data => {
+            const container = document.getElementById('userListContainer');
+            if (data.length === 0) {
+                container.innerHTML = '<p>У вас нет привязанных территорий.</p>';
+                return;
+            }
+            container.innerHTML = '<h4>Мои территории:</h4><ul>' +
+                data.map(t => `<li>ID: ${t.id}, Название: ${t.name}</li>`).join('') + '</ul>';
         })
         .catch(err => {
-            console.error('Ошибка при удалении территории:', err);
-            alert('Ошибка при удалении территории');
+            console.error('Ошибка получения моих территорий:', err);
+            alert('Ошибка при загрузке территорий');
         });
 }
+
+function getMyPasses() {
+    fetch('http://localhost:8080/api/pass/my', {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+        }
+    })
+        .then(res => {
+            if (!res.ok) throw new Error(`Ошибка: ${res.status}`);
+            return res.json();
+        })
+        .then(data => {
+            const container = document.getElementById('passListContainer');
+            const passes = data.content || [];
+            if (passes.length === 0) {
+                container.innerHTML = '<p>У вас нет пропусков.</p>';
+                return;
+            }
+            container.innerHTML = '<h4>Мои пропуска:</h4><ul>' +
+                passes.map(p => `<li>ID: ${p.id}, Тип: ${p.type}, Статус: ${p.status}</li>`).join('') + '</ul>';
+        })
+        .catch(err => {
+            console.error('Ошибка получения моих пропусков:', err);
+            alert('Ошибка при загрузке пропусков');
+        });
+}
+
+
+
+
+
 
 
 

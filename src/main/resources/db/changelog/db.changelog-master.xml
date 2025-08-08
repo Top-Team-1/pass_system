@@ -15,6 +15,7 @@
     <include file="/db/changelog/2025-07-31-alter-table-pass-add-columns.sql"/>
     <include file="/db/changelog/2025-07-31-alter-table-territory-add-column-type.sql"/>
     <include file="/db/changelog/2025-08-04-alter-table-users-add-column-password.sql"/>
+    <include file="/db/changelog/2025-08-08-alter-table-pass-add-cascade.sql"/>
 
 
 

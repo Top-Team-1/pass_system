@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -30,6 +31,7 @@ public class UserController {
 
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserResponseDTO> create(@RequestBody SignUpRequest signUpRequest) {
 
         return ResponseEntity.ok(userService.create(signUpRequest));
@@ -37,6 +39,7 @@ public class UserController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Page<UserResponseDTO>> findAll(@ModelAttribute UserFilterDTO filter,
                                                          @PageableDefault(size = 5, sort = "id",
                                                                  direction = Sort.Direction.ASC) Pageable pageable) {
@@ -45,6 +48,7 @@ public class UserController {
     }
 
     @GetMapping(path = "{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserResponseDTO> findById(@PathVariable Long id) {
 
         return ResponseEntity.ok(userService.findById(id));
@@ -57,6 +61,7 @@ public class UserController {
     }
 
     @DeleteMapping(path = "{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> delete(@PathVariable Long id){
 
         userService.delete(id);

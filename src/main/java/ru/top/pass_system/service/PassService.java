@@ -32,6 +32,7 @@ public class PassService {
     private final UserRepository userRepository;
     private final TerritoryRepository territoryRepository;
     private final PassMapper passMapper;
+    private final CurrentUserService currentUserService;
 
     /**
      * Создает новый пропуск и сохраняет его в базу данных
@@ -105,5 +106,14 @@ public class PassService {
         Pass pass = passRepository.findById(id)
                 .orElseThrow(() -> new PassNotFoundException(id));
         passRepository.delete(pass);
+    }
+
+    public Page<PassResponseDTO> getPassesForCurrentUser(PassFilterDTO passFilterDTO, Pageable pageable){
+
+        User user = currentUserService.findUser();
+
+        passFilterDTO.setUserId(user.getId());
+
+        return findAll(passFilterDTO, pageable);
     }
 }
