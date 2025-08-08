@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.top.pass_system.dto.passDTO.PassCreateDTO;
 import ru.top.pass_system.dto.passDTO.PassFilterDTO;
@@ -26,6 +27,7 @@ public class PassController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Page<PassResponseDTO>> findAll(
             @ModelAttribute PassFilterDTO filter,
             @PageableDefault(size = 5, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
@@ -47,5 +49,11 @@ public class PassController {
     public ResponseEntity<String> delete(@PathVariable Long id) {
         passService.delete(id);
         return ResponseEntity.ok("Пропуск с id: " + id + " успешно удалён.");
+    }
+
+    @GetMapping(path = "my")
+    public ResponseEntity<Page<PassResponseDTO>> getPassesForCurrentUser(PassFilterDTO passFilterDTO, Pageable pageable){
+
+       return ResponseEntity.ok(passService.getPassesForCurrentUser(passFilterDTO, pageable));
     }
 }

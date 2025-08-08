@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.top.pass_system.dto.userDTO.CurrentUserUpdateDTO;
 import ru.top.pass_system.dto.userDTO.UserResponseDTO;
+import ru.top.pass_system.model.User;
 import ru.top.pass_system.service.CurrentUserService;
 
 @RestController

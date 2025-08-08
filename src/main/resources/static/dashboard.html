@@ -28,15 +28,18 @@
 
     <div id="userActions" style="display: none;">
         <h3>Действия пользователя</h3>
-        <!-- Добавь действия для обычного пользователя -->
-        <p>Здесь могут быть кнопки только для USER'ов</p>
+        <button onclick="getMyTerritories()">Мои территории</button>
+        <button onclick="createPass()">Создать пропуск</button> <!-- пока без логики -->
+        <button onclick="getMyPasses()">Показать список моих пропусков</button>
     </div>
     <div id="userListContainer" style="margin-top: 20px;"></div>
+    <div id="passListContainer"></div>
 
 
     <button onclick="logout()" class="extra-button" style="margin-top: 20px;">Выход</button>
 </div>
 
 <script src="dashboard.js"></script>
+
 </body>
 </html>

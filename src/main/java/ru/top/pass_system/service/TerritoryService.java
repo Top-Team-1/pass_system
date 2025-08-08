@@ -14,8 +14,12 @@ import ru.top.pass_system.exception.territory.TerritoryAlreadyExistsException;
 import ru.top.pass_system.exception.territory.TerritoryNotFoundException;
 import ru.top.pass_system.mapper.TerritoryMapper;
 import ru.top.pass_system.model.Territory;
+import ru.top.pass_system.model.User;
+import ru.top.pass_system.model.UserTerritory;
 import ru.top.pass_system.repository.TerritoryRepository;
 import ru.top.pass_system.specification.TerritorySpecification;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +27,8 @@ public class TerritoryService {
 
     private final TerritoryRepository territoryRepository;
     private final TerritoryMapper territoryMapper;
+    private final CurrentUserService currentUserService;
+    private final UserTerritoryService userTerritoryService;
 
     public TerritoryResponseDTO create(TerritoryCreateDTO territoryCreateDTO) {
 
@@ -57,5 +63,15 @@ public class TerritoryService {
         Territory territory = territoryRepository.findById(id)
                 .orElseThrow(() -> new TerritoryNotFoundException(id));
         territoryRepository.delete(territory);
+    }
+
+    public List<TerritoryResponseDTO> getTerritoryForCurrentUser(){
+
+        User user = currentUserService.getUserWithZone();
+
+        return user.getUserTerritories().stream()
+                .map(UserTerritory::getTerritory)
+                .map(territoryMapper::toTerritoryResponseDTO)
+                .toList();
     }
 }

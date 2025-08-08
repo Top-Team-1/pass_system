@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import ru.top.pass_system.enums.PassStatus;
 import ru.top.pass_system.enums.PassType;
 
 import java.time.LocalDateTime;
