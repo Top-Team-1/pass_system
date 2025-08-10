@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import ru.top.pass_system.exception.pass.AccessCheckerDeniedException;
 import ru.top.pass_system.exception.pass.PassNotFoundException;
 import ru.top.pass_system.exception.territory.TerritoryAlreadyExistsException;
 import ru.top.pass_system.exception.territory.TerritoryNotFoundException;
@@ -94,6 +95,19 @@ public class GlobalExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AccessCheckerDeniedException.class)
+    public ResponseEntity<ErrorResponse> handeAccessCheckerDeniedException (AccessCheckerDeniedException ex){
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .time(LocalDateTime.now())
+                .status(HttpStatus.FORBIDDEN.value())
+                .error(HttpStatus.FORBIDDEN.getReasonPhrase())
+                .message(ex.getMessage())
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 }
 
