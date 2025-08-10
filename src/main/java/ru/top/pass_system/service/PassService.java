@@ -13,14 +13,12 @@ import ru.top.pass_system.dto.passDTO.PassUpdateDTO;
 import ru.top.pass_system.enums.PassStatus;
 import ru.top.pass_system.exception.pass.PassNotFoundException;
 import ru.top.pass_system.exception.territory.TerritoryNotFoundException;
-import ru.top.pass_system.exception.user.UserNotFoundException;
 import ru.top.pass_system.mapper.PassMapper;
 import ru.top.pass_system.model.Pass;
 import ru.top.pass_system.model.Territory;
 import ru.top.pass_system.model.User;
 import ru.top.pass_system.repository.PassRepository;
 import ru.top.pass_system.repository.TerritoryRepository;
-import ru.top.pass_system.repository.UserRepository;
 import ru.top.pass_system.specification.PassSpecification;
 
 
@@ -30,7 +28,6 @@ import ru.top.pass_system.specification.PassSpecification;
 public class PassService {
 
     private final PassRepository passRepository;
-    private final UserRepository userRepository;
     private final TerritoryRepository territoryRepository;
     private final PassMapper passMapper;
     private final CurrentUserService currentUserService;
@@ -45,8 +42,8 @@ public class PassService {
     @Transactional
     public PassResponseDTO create(PassCreateDTO passCreateDTO) {
 
-        User user = userRepository.findById(passCreateDTO.getUserId())
-                .orElseThrow(() -> new  UserNotFoundException(passCreateDTO.getUserId()));
+        User user  = currentUserService.findUser();
+
 
        Territory territory = territoryRepository.findById(passCreateDTO.getTerritoryId())
                .orElseThrow(() -> new TerritoryNotFoundException(passCreateDTO.getTerritoryId()));

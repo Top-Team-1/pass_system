@@ -465,7 +465,6 @@ function bindUserToTerritory() {
 const API_PASS = 'http://localhost:8080/api/pass';
 
 function createPass() {
-    const userId = prompt('ID пользователя:');
     const territoryId = prompt('ID территории:');
     const startDate = prompt('Дата начала (yyyy-MM-dd HH:mm):');
     const endDate = prompt('Дата окончания (yyyy-MM-dd HH:mm):');
@@ -473,13 +472,12 @@ function createPass() {
     const firstName = prompt('Имя:');
     const lastName = prompt('Фамилия:');
 
-    if (!userId || !territoryId || !startDate || !endDate || !type || !firstName || !lastName) {
+    if (!territoryId || !startDate || !endDate || !type || !firstName || !lastName) {
         alert('Все поля обязательны!');
         return;
     }
 
     const data = {
-        userId: Number(userId),
         territoryId: Number(territoryId),
         startDate,
         endDate,

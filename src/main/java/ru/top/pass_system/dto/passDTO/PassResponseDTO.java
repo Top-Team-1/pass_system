@@ -23,6 +23,7 @@ public class PassResponseDTO {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String type;
+    private String status;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime addedAt;
