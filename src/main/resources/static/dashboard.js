@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             throw new Error('Ошибка получения информации о пользователе');
         }
 
-        const user = await response.json(); // предполагается, что сервер вернёт { firstName, lastName, role }
+        const user = await response.json();
 
         document.getElementById('userInfo').innerText = `Привет, ${user.firstName} ${user.lastName} [${user.role}]`;
 
@@ -41,9 +41,6 @@ function logout() {
     location.href = 'index.html';
 }
 
-// ==== ADMIN METHODS ====
-
-// 🔁 TODO: Вставь сюда вызовы своих API
 
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('jwt');
@@ -54,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // Получение данных пользователя по токену
+
     fetch('http://localhost:8080/api/me', {
         headers: {
             'Authorization': `Bearer ${token}`
@@ -83,7 +80,7 @@ function logout() {
     location.href = 'index.html';
 }
 
-// ===== ADMIN Actions =====
+
 
 function createUser() {
     const firstName = prompt('Имя:');
@@ -270,16 +267,87 @@ function deleteUser(id) {
         });
 }
 
-function getAllTerritories() {
-    console.log('Получить все территории');
-    // TODO: fetch('...', { method: 'GET', ... })
+function getAllTerritories(page = 0, sort = 'id', direction = 'asc') {
+    currentTerritoryPage = page;
+    currentTerritorySort = sort;
+    currentTerritoryDirection = direction;
+
+    const url = `http://localhost:8080/api/territory?page=${page}&size=${territoryPageSize}&sort=${sort},${direction}`;
+
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+        }
+    })
+        .then(res => {
+            if (!res.ok) throw new Error(`Ошибка загрузки территорий: ${res.status}`);
+            return res.json();
+        })
+        .then(data => {
+            const territories = data.content;
+            const totalPages = data.totalPages;
+            const container = document.getElementById('userListContainer');
+
+            if (!territories || territories.length === 0) {
+                container.innerHTML = '<p>Территории не найдены.</p>';
+                return;
+            }
+
+            let html = `
+                <h3>Список территорий</h3>
+                <table border="1" cellpadding="5" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTerritories('id')">ID</th>
+                            <th onclick="sortTerritories('name')">Название</th>
+                            <th>Адрес</th>
+                            <th>Тип</th>
+                            <th>Добавлено</th>
+                            <th>Обновлено</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            territories.forEach(t => {
+                html += `
+                    <tr>
+                        <td>${t.id}</td>
+                        <td>${t.name}</td>
+                        <td>${t.address}</td>
+                        <td>${t.type}</td>
+                        <td>${t.addedAt}</td>
+                        <td>${t.updatedAt}</td>
+                        <td><button onclick="confirmDeleteTerritory(${t.id})">Удалить</button></td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+
+            // Пагинация
+            html += `<div style="margin-top: 10px;">`;
+            for (let i = 0; i < totalPages; i++) {
+                html += `<button onclick="getAllTerritories(${i}, '${sort}', '${direction}')"
+                            ${i === page ? 'disabled' : ''}>${i + 1}</button> `;
+            }
+            html += `</div>`;
+
+            container.innerHTML = html;
+        })
+        .catch(err => {
+            console.error('Ошибка при получении территорий:', err);
+            alert('Не удалось загрузить список территорий');
+        });
 }
 
-// Создание новой территории
+
 function createTerritory() {
     const name = prompt('Название территории:');
     const address = prompt('Адрес:');
-    const type = prompt('Тип территории (например: PARK, BUILDING, ZONE и т.д.):');
+    const type = prompt('Тип территории (HOUSE, OFFICE, ENTERPRISE :');
 
     if (!name || !address || !type) {
         alert('Все поля обязательны!');
@@ -359,7 +427,6 @@ function bindUserToTerritory() {
         return;
     }
 
-    // Проверка, что введены числа
     if (isNaN(Number(userId)) || isNaN(Number(territoryId))) {
         alert('ID должны быть числами!');
         return;
@@ -388,7 +455,7 @@ function bindUserToTerritory() {
             }
         })
         .then(message => {
-            alert(message); // "Юзеру добавлена территория"
+            alert(message);
         })
         .catch(err => {
             console.error('Ошибка при привязке пользователя к территории:', err);
@@ -402,7 +469,7 @@ function createPass() {
     const territoryId = prompt('ID территории:');
     const startDate = prompt('Дата начала (yyyy-MM-dd HH:mm):');
     const endDate = prompt('Дата окончания (yyyy-MM-dd HH:mm):');
-    const type = prompt('Тип (PASS_FOR_CAR или PASS_FOR_PEDESTRIAN):');
+    const type = prompt('Тип (TIMELESS или PERMANENT :');
     const firstName = prompt('Имя:');
     const lastName = prompt('Фамилия:');
 
@@ -604,90 +671,14 @@ function logout() {
     location.href = 'index.html';
 }
 
-// ===== ADMIN Actions =====
 
-// Глобальные переменные для пагинации и сортировки территорий
 let currentTerritoryPage = 0;
 let currentTerritorySort = 'id';
 let currentTerritoryDirection = 'asc';
 const territoryPageSize = 5;
 
-// Получение всех территорий с пагинацией и сортировкой
-function getAllTerritories(page = 0, sort = 'id', direction = 'asc') {
-    currentTerritoryPage = page;
-    currentTerritorySort = sort;
-    currentTerritoryDirection = direction;
 
-    const url = `http://localhost:8080/api/territory?page=${page}&size=${territoryPageSize}&sort=${sort},${direction}`;
 
-    fetch(url, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('jwt')}`
-        }
-    })
-        .then(res => {
-            if (!res.ok) throw new Error(`Ошибка загрузки территорий: ${res.status}`);
-            return res.json();
-        })
-        .then(data => {
-            const territories = data.content;
-            const totalPages = data.totalPages;
-            const container = document.getElementById('userListContainer');
-
-            if (!territories || territories.length === 0) {
-                container.innerHTML = '<p>Территории не найдены.</p>';
-                return;
-            }
-
-            let html = `
-                <h3>Список территорий</h3>
-                <table border="1" cellpadding="5" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th onclick="sortTerritories('id')">ID</th>
-                            <th onclick="sortTerritories('name')">Название</th>
-                            <th>Адрес</th>
-                            <th>Тип</th>
-                            <th>Добавлено</th>
-                            <th>Обновлено</th>
-                            <th>Действия</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            territories.forEach(t => {
-                html += `
-                    <tr>
-                        <td>${t.id}</td>
-                        <td>${t.name}</td>
-                        <td>${t.address}</td>
-                        <td>${t.type}</td>
-                        <td>${t.addedAt}</td>
-                        <td>${t.updatedAt}</td>
-                        <td><button onclick="confirmDeleteTerritory(${t.id})">Удалить</button></td>
-                    </tr>
-                `;
-            });
-
-            html += '</tbody></table>';
-
-            // Пагинация
-            html += `<div style="margin-top: 10px;">`;
-            for (let i = 0; i < totalPages; i++) {
-                html += `<button onclick="getAllTerritories(${i}, '${sort}', '${direction}')"
-                            ${i === page ? 'disabled' : ''}>${i + 1}</button> `;
-            }
-            html += `</div>`;
-
-            container.innerHTML = html;
-        })
-        .catch(err => {
-            console.error('Ошибка при получении территорий:', err);
-            alert('Не удалось загрузить список территорий');
-        });
-}
 
 // Сортировка территорий
 function sortTerritories(field) {
@@ -707,7 +698,7 @@ function confirmDeleteTerritory(id) {
 
 
 
-
+// Методы USER
 function getMyTerritories() {
     fetch('http://localhost:8080/api/territory/my', {
         headers: {

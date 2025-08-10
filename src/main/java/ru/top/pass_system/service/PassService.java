@@ -10,6 +10,7 @@ import ru.top.pass_system.dto.passDTO.PassCreateDTO;
 import ru.top.pass_system.dto.passDTO.PassFilterDTO;
 import ru.top.pass_system.dto.passDTO.PassResponseDTO;
 import ru.top.pass_system.dto.passDTO.PassUpdateDTO;
+import ru.top.pass_system.enums.PassStatus;
 import ru.top.pass_system.exception.pass.PassNotFoundException;
 import ru.top.pass_system.exception.territory.TerritoryNotFoundException;
 import ru.top.pass_system.exception.user.UserNotFoundException;
@@ -22,7 +23,7 @@ import ru.top.pass_system.repository.TerritoryRepository;
 import ru.top.pass_system.repository.UserRepository;
 import ru.top.pass_system.specification.PassSpecification;
 
-import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +34,7 @@ public class PassService {
     private final TerritoryRepository territoryRepository;
     private final PassMapper passMapper;
     private final CurrentUserService currentUserService;
+    private final AccessChecker accessChecker;
 
     /**
      * Создает новый пропуск и сохраняет его в базу данных
@@ -40,20 +42,21 @@ public class PassService {
      * @param passCreateDTO данные для создания пропуска
      * @return сохраненный пропуск
      */
+    @Transactional
     public PassResponseDTO create(PassCreateDTO passCreateDTO) {
-        Optional<User> userOptional = userRepository.findById(passCreateDTO.getUserId());
-        if (userOptional.isEmpty()) {
-            throw new UserNotFoundException(passCreateDTO.getUserId());
-        }
 
-        Optional<Territory> territoryOptional = territoryRepository.findById(passCreateDTO.getTerritoryId());
-        if (territoryOptional.isEmpty()) {
-            throw new TerritoryNotFoundException(passCreateDTO.getTerritoryId());
-        }
+        User user = userRepository.findById(passCreateDTO.getUserId())
+                .orElseThrow(() -> new  UserNotFoundException(passCreateDTO.getUserId()));
+
+       Territory territory = territoryRepository.findById(passCreateDTO.getTerritoryId())
+               .orElseThrow(() -> new TerritoryNotFoundException(passCreateDTO.getTerritoryId()));
+
+       accessChecker.checkUserTerritoryOwnership(user, territory);
 
         Pass pass = passMapper.toPass(passCreateDTO);
-        pass.setUser(userOptional.get());
-        pass.setTerritory(territoryOptional.get());
+        pass.setUser(user);
+        pass.setTerritory(territory);
+        pass.setStatus(PassStatus.ACTIVE); // TODO ПЕРЕДЕЛАТЬ! Написать метод, который будет проверять даты и исходя из этого ставится статус
 
         return passMapper.toPassResponseDTO(passRepository.save(pass));
     }
@@ -116,4 +119,5 @@ public class PassService {
 
         return findAll(passFilterDTO, pageable);
     }
+
 }
