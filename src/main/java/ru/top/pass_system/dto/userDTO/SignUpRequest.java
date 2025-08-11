@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import ru.top.pass_system.validation.ValidPassword;
 
 import java.time.LocalDate;
 
@@ -22,5 +23,6 @@ public class SignUpRequest {
     private String lastName;
     private LocalDate dateOfBirth;
     private String phone;
+    @ValidPassword
     private String password;
 }
