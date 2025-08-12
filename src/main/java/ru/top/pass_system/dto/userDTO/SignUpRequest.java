@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.validator.constraints.Length;
 import ru.top.pass_system.validation.ValidPassword;
 import ru.top.pass_system.validation.ValidPhone;
 
