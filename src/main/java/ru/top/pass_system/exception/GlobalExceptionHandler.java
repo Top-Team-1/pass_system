@@ -10,6 +10,7 @@ import ru.top.pass_system.exception.pass.AccessCheckerDeniedException;
 import ru.top.pass_system.exception.pass.PassNotFoundException;
 import ru.top.pass_system.exception.territory.TerritoryAlreadyExistsException;
 import ru.top.pass_system.exception.territory.TerritoryNotFoundException;
+import ru.top.pass_system.exception.user.InvalidPasswordException;
 import ru.top.pass_system.exception.user.UserAlreadyExistsException;
 import ru.top.pass_system.exception.user.UserNotFoundException;
 import java.time.LocalDateTime;
@@ -124,6 +125,19 @@ public class GlobalExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidPasswordException(InvalidPasswordException ex){
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .time(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .error(HttpStatus.CONFLICT.getReasonPhrase())
+                .message(ex.getMessage())
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
 }
 

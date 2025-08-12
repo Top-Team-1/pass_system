@@ -2,10 +2,14 @@ package ru.top.pass_system.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
+import ru.top.pass_system.dto.userDTO.ChangePasswordForCurrentUserDTO;
 import ru.top.pass_system.dto.userDTO.CurrentUserUpdateDTO;
 import ru.top.pass_system.dto.userDTO.UserResponseDTO;
+import ru.top.pass_system.exception.user.InvalidPasswordException;
 import ru.top.pass_system.exception.user.UserAlreadyExistsException;
 import ru.top.pass_system.exception.user.UserNotFoundException;
 import ru.top.pass_system.mapper.UserMapper;
@@ -18,6 +22,7 @@ public class CurrentUserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public User findUser() {
 
@@ -51,5 +56,15 @@ public class CurrentUserService {
 
         return userRepository.getUserWithZone(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId())
                 .orElseThrow(() -> new UserNotFoundException(((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId()));
+    }
+
+    @Transactional
+    public void changePassword(ChangePasswordForCurrentUserDTO changePasswordForCurrentUserDTO) {
+        User user = findUser();
+        if (!passwordEncoder.matches(changePasswordForCurrentUserDTO.getOldPassword(), user.getPassword())) {
+            throw new InvalidPasswordException();
+        }
+        user.setPassword(passwordEncoder.encode(changePasswordForCurrentUserDTO.getNewPassword()));
+        userRepository.save(user);
     }
 }
